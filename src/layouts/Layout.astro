@@ -22,6 +22,20 @@ const chips = [
   { id: 'spotify', label: 'Spotify', href: ok(links.spotify, /^https:\/\/open\.spotify\.com\//) },
   { id: 'applemusic', label: 'Apple Music', href: ok(links.appleMusic, /^https:\/\/music\.apple\.com\//) },
 ].filter((c) => c.href);
+// Footer "Listen / Follow" column: every platform with a valid link, including SoundCloud and Facebook.
+const footerLinks = [
+  ...chips.map((c) => ({ label: c.label, href: c.href })),
+  { label: 'SoundCloud', href: ok((links as any).soundcloud, /^https:\/\/(www\.)?soundcloud\.com\//) },
+  { label: 'Facebook', href: ok((links as any).facebook, /^https:\/\/(www\.)?facebook\.com\//) },
+].filter((l) => l.href);
+// One list drives both the menu and the footer index, in the same order as the sections on the page.
+const sections = [
+  { href: '/#music', nav: 'Music', index: 'Music' },
+  { href: '/#dates', nav: 'Shows', index: 'Upcoming Shows' },
+  { href: '/#about', nav: 'About', index: 'The Story' },
+  { href: '/#visuals', nav: 'Gallery', index: 'Gallery' },
+  { href: '/#contact', nav: 'Contact', index: 'Contact & Bookings' },
+];
 // Changes on every deploy so browsers never keep an old copy of the script or styles.
 const buildId = Date.now().toString(36);
 ---
@@ -78,11 +92,7 @@ const buildId = Date.now().toString(36);
       </button>
       <nav class="site-nav" id="site-nav" aria-label="Main" data-nav>
         <ul class="site-nav__list">
-          <li><a href="/#about">About</a></li>
-          <li><a href="/#dates">Events</a></li>
-          <li><a href="/#music">Music</a></li>
-          <li><a href="/#visuals">Social Gallery</a></li>
-          <li><a href="/#contact">Contact</a></li>
+          {sections.map((x) => <li><a href={x.href}>{x.nav}</a></li>)}
         </ul>
         <div class="site-nav__social">
           <span class="site-nav__label">Listen / Follow</span>
@@ -98,14 +108,36 @@ const buildId = Date.now().toString(36);
   </main>
   <footer class="site-footer">
     <div class="container">
-      <img class="site-footer__wordmark" src="/img/logo-black.svg" alt="" width="1400" height="707" loading="lazy">
-      <div class="site-footer__bar">
+      <div class="site-footer__top">
+        <div class="site-footer__brand">
+          <img class="site-footer__wordmark" src="/img/logo-black.svg" alt={site.name} width="1400" height="707" loading="lazy">
+          <p>{site.footerBlurb}</p>
+        </div>
+        <nav class="site-footer__col" aria-label="Site index">
+          <h2>Site</h2>
+          <ul>
+            {sections.map((x) => <li><a href={x.href}>{x.index}</a></li>)}
+          </ul>
+        </nav>
+        <nav class="site-footer__col" aria-label="Listen and follow">
+          <h2>Listen / Follow</h2>
+          <ul>
+            {footerLinks.map((l) => <li><a href={l.href} rel="me noopener noreferrer" target="_blank">{l.label}</a></li>)}
+          </ul>
+        </nav>
+        <nav class="site-footer__col" aria-label="Legal">
+          <h2>Legal</h2>
+          <ul>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Use</a></li>
+            <li><a href="/cookies">Cookie Policy</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+    <div class="site-footer__bar">
+      <div class="container">
         <p>&copy; <span data-year>2026</span> {legal.responsibleParty || site.name}. All rights reserved.</p>
-        <ul class="site-footer__legal">
-          <li><a href="/privacy">Privacy Policy</a></li>
-          <li><a href="/terms">Terms of Use</a></li>
-          <li><a href="/cookies">Cookie Policy</a></li>
-        </ul>
       </div>
     </div>
   </footer>
