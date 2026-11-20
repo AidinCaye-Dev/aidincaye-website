@@ -438,3 +438,23 @@ button { font: inherit; color: inherit; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* Play button: YouTube's own red play logo (the video plays from YouTube). Overrides the round button above. */
+.video-facade__play {
+  width: clamp(4.25rem, 8vw, 6rem); aspect-ratio: 68 / 48; height: auto;
+  border: 0; border-radius: 0; background: none; padding: 0;
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, .35));
+}
+.video-facade__play svg.video-facade__yt { width: 100%; height: 100%; margin: 0; fill: none; }
+.video-facade__yt-bg { fill: #ff0000; transition: fill .2s; }
+.video-facade__yt-arrow { fill: #fff; }
+.video-facade__play:hover, .video-facade__play:focus-visible { background: none; border-color: transparent; transform: translate(-50%, -50%) scale(1.06); }
+.video-facade__play:hover .video-facade__yt-bg, .video-facade__play:focus-visible .video-facade__yt-bg { fill: #cc0000; }
+.video-facade__play:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+@media (max-width: 600px) {
+  .video-facade__play { width: 3.5rem; top: 36%; }
+  .video-facade__meta { left: 1rem; right: 1rem; bottom: .9rem; }
+  .video-facade__meta .tag { display: none; }
+  .video-facade__title { font-size: 1rem; margin-top: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .video-facade__note { font-size: .66rem; margin-top: .3rem; }
+}
