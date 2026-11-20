@@ -1,0 +1,20 @@
+# Rebuilds the site once a week (saves Cloudflare builds, which are shared across sites on the account) so the latest YouTube video and Spotify/Apple releases stay current.
+# One-time setup:
+#   1. Cloudflare dashboard -> Workers & Pages -> aidincaye-website -> Settings -> Builds & deployments -> Deploy hooks -> create one.
+#   2. GitHub repo -> Settings -> Secrets and variables -> Actions -> New secret: CF_DEPLOY_HOOK = the hook URL.
+name: Refresh site data
+on:
+  schedule:
+    - cron: "41 3 * * 1"   # 03:41 UTC every Monday (05:41 SAST)
+  workflow_dispatch:
+permissions: {}
+jobs:
+  trigger-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Cloudflare Pages deploy hook
+        env:
+          HOOK: ${{ secrets.CF_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then echo "CF_DEPLOY_HOOK not set"; exit 1; fi
+          curl --fail --silent --show-error -X POST "$HOOK"

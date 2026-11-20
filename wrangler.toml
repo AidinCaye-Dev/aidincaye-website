@@ -1,0 +1,11 @@
+name = "aidincaye-website"
+compatibility_date = "2026-11-19"
+pages_build_output_dir = "dist"
+
+# Public repository: no secrets here. Everything below is set in the Cloudflare dashboard
+# (Workers & Pages -> aidincaye-website -> Settings -> Variables and Secrets).
+# Secrets (encrypted):
+#   TURNSTILE_SECRET, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, BOOKING_TO_EMAIL, BOOKING_FROM_EMAIL
+# Build variables/secrets (used at build time only):
+#   INSTAGRAM_ACCESS_TOKEN (secret), INSTAGRAM_USER_ID, YOUTUBE_API_KEY (secret, read-only),
+#   SPOTIFY_CLIENT_ID / SPOTIFY_CLIENT_SECRET (optional), YOUTUBE_CHANNEL_ID (optional), PUBLIC_TURNSTILE_SITEKEY (optional)
