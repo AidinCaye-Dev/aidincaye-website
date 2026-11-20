@@ -238,15 +238,30 @@ button { font: inherit; color: inherit; }
 .section--dates { background: var(--paper-2); }
 .show-list { border-top: 1px solid var(--line-strong); }
 .show {
-  display: grid; grid-template-columns: 7rem 1.2fr 1fr auto; align-items: center; gap: 1.5rem;
-  padding: 1.6rem 0; border-bottom: 1px solid var(--line-strong);
+  display: grid; grid-template-columns: 7rem 1fr auto; align-items: center; gap: 1.5rem;
+  padding: 1.35rem 0; border-bottom: 1px solid var(--line-strong);
 }
-.show__date { display: flex; align-items: baseline; gap: .6rem; }
-.show__day { font-size: 2.8rem; font-weight: 300; line-height: 1; }
-.show__month { font-size: .8rem; font-weight: 500; letter-spacing: var(--track); text-transform: uppercase; }
-.show__venue { font-size: clamp(1.15rem, 2vw, 1.5rem); font-weight: 500; text-transform: uppercase; letter-spacing: .08em; line-height: 1.2; }
-.show__city { font-size: .92rem; color: var(--ink-3); margin-top: .2rem; }
-.show__event { color: var(--ink-2); font-size: .95rem; }
+.show__date { display: block; line-height: 1; white-space: nowrap; }
+.show__day { display: block; font-size: 2.6rem; font-weight: 300; line-height: 1; }
+.show__month { display: block; margin-top: .45rem; font-size: .74rem; font-weight: 600; letter-spacing: .18em; }
+.show__when { display: block; margin-top: .35rem; font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+.show__next { margin-bottom: .45rem; font-size: .7rem; font-weight: 500; letter-spacing: .3em; text-transform: uppercase; }
+.show__venue { font-size: clamp(1.1rem, 1.9vw, 1.4rem); font-weight: 500; text-transform: uppercase; letter-spacing: .08em; line-height: 1.2; }
+.show__city { font-size: .95rem; color: var(--ink-3); margin-top: .3rem; }
+.show__free { font-size: .72rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; }
+/* Featured next gig: the one dark panel in the section, so it reads first */
+.show--next {
+  grid-template-columns: auto 1fr auto; gap: 2rem; margin-bottom: 1rem; padding: clamp(1.5rem, 3vw, 2.25rem);
+  background: var(--ink); color: var(--paper); border-bottom: 0;
+}
+.show--next .show__date { text-align: center; padding-right: 2rem; border-right: 1px solid rgba(244, 243, 240, .25); }
+.show--next .show__day { font-size: clamp(3.4rem, 6vw, 4.75rem); }
+.show--next .show__when, .show--next .show__city { color: #b9b8b4; }
+.show--next .show__venue { font-size: clamp(1.5rem, 3vw, 2.4rem); }
+.show--next .btn--solid { background: var(--paper); color: var(--ink); border-color: var(--paper); padding: 1rem 1.6rem; }
+.show--next .btn--solid:hover { background: transparent; color: var(--paper); }
+.show--next .btn--disabled { border-color: rgba(244, 243, 240, .35); color: #b9b8b4; }
+.show--next a:focus-visible { outline-color: var(--paper); }
 .show-empty { padding: 2rem 0 0; color: var(--ink-2); border-top: 1px solid var(--line-strong); }
 
 /* ---------- About ---------- */
@@ -429,9 +444,8 @@ button { font: inherit; color: inherit; }
 }
 @media (max-width: 900px) {
 
-  .show { grid-template-columns: 5.5rem 1fr auto; row-gap: .35rem; }
-  .show__event { grid-column: 2; grid-row: 2; font-size: .85rem; }
-  .show .btn { grid-column: 3; grid-row: 1 / span 2; }
+  .show { grid-template-columns: 5.5rem 1fr auto; }
+  .show--next { gap: 1.25rem; }
   .about, .contact { grid-template-columns: 1fr; }
   .about__media { max-width: 460px; margin-right: 1.25rem; }
   .release-grid { grid-template-columns: repeat(2, 1fr); }
@@ -470,10 +484,13 @@ button { font: inherit; color: inherit; }
   .form__row { grid-template-columns: 1fr; }
   .form .btn--solid { justify-self: stretch; }
   .about__facts { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-  .show { grid-template-columns: 4.25rem 1fr; }
-  .show__date { flex-direction: column; gap: .1rem; }
-  .show__day { font-size: 2.2rem; }
-  .show .btn { grid-column: 2; grid-row: 3; justify-self: start; margin-top: .5rem; }
+  .show { grid-template-columns: 5.2rem 1fr; gap: 1rem; }
+  .show .btn, .show__free { grid-column: 2; justify-self: start; }
+  .show--next { grid-template-columns: auto 1fr; padding: 1.25rem; }
+  .show--next .show__date { padding-right: 1rem; }
+  .show--next .show__day { font-size: 3.2rem; }
+  .show--next .show__venue { font-size: 1.4rem; }
+  .show--next .btn, .show--next .show__free { grid-column: 1 / -1; justify-self: stretch; justify-content: center; text-align: center; }
   .site-footer__wordmark { width: 7.5rem; }
 }
 @media (max-width: 520px) { .legal__toc ol { columns: 1; } }
