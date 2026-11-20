@@ -11,7 +11,8 @@ import gallery from '../content/gallery.json';
 import accoladesRaw from '../content/accolades.json';
 import statsAuto from '../content/stats.auto.json';
 import statsManual from '../content/stats.manual.json';
-import { Content as Bio } from '../content/bio.md';
+import bioRaw from '../content/bio.md?raw';
+import numbersRaw from '../content/numbers.json';
 
 // Latest releases come from Spotify / Apple Music at build time; releases.json is a manual fallback.
 const releases = ((autoReleases as any[]).length ? autoReleases : manualReleases).slice(0, 4) as any[];
@@ -59,6 +60,16 @@ const platforms = [
 const youtubeHref = platforms.find((p) => p.name === 'YouTube')?.href || '';
 const streamLinks = platforms.filter((p) => p.name === 'Spotify' || p.name === 'Apple Music');
 const SITE = `https://${site.domain}`;
+// The Story: plain paragraphs from bio.md (only *italics* are kept); the first two show, the rest open with "Read more".
+const escHtml = (x: string) => x.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const bioParas = String(bioRaw).split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean)
+  .map((p) => escHtml(p.replace(/\s+/g, ' ')).replace(/\*([^*]+)\*/g, '<em>$1</em>'));
+const bioLead = bioParas.slice(0, 2);
+const bioMore = bioParas.slice(2);
+// Headline numbers for Highlights: short value + label, plain text only.
+const numbers = (Array.isArray(numbersRaw) ? numbersRaw : [])
+  .map((n: any) => ({ value: String(n.value || '').slice(0, 8), label: String(n.label || '').slice(0, 40) }))
+  .filter((n) => n.value && n.label && !/[<>]/.test(n.value + n.label)).slice(0, 4);
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -89,9 +100,9 @@ const turnstileKey = /^[0-9A-Za-z_-]{10,60}$/.test(rawKey) ? rawKey : '';
   <section class="hero" id="top" aria-labelledby="hero-title">
     <div class="hero__media">
       <picture>
-        <source media="(max-width: 700px)" type="image/avif" srcset="/img/hero-m-900.avif">
-        <source media="(max-width: 700px)" type="image/webp" srcset="/img/hero-m-900.webp">
-        <source media="(max-width: 700px)" srcset="/img/hero-m-900.jpg">
+        <source media="(max-width: 1100px) and (orientation: portrait), (max-width: 700px)" type="image/avif" srcset="/img/hero-m-900.avif 900w, /img/hero-m-1036.avif 1036w" sizes="100vw">
+        <source media="(max-width: 1100px) and (orientation: portrait), (max-width: 700px)" type="image/webp" srcset="/img/hero-m-900.webp 900w, /img/hero-m-1036.webp 1036w" sizes="100vw">
+        <source media="(max-width: 1100px) and (orientation: portrait), (max-width: 700px)" srcset="/img/hero-m-900.jpg 900w, /img/hero-m-1036.jpg 1036w" sizes="100vw">
         <source type="image/avif" srcset="/img/hero-900.avif 900w, /img/hero-1600.avif 1600w, /img/hero-2576.avif 2576w" sizes="100vw">
         <source type="image/webp" srcset="/img/hero-900.webp 900w, /img/hero-1600.webp 1600w, /img/hero-2576.webp 2576w" sizes="100vw">
         <img class="hero__photo" src="/img/hero-1600.jpg" srcset="/img/hero-900.jpg 900w, /img/hero-1600.jpg 1600w, /img/hero-2576.jpg 2576w" sizes="100vw" width="2576" height="1382" alt="" fetchpriority="high">
@@ -122,7 +133,6 @@ const turnstileKey = /^[0-9A-Za-z_-]{10,60}$/.test(rawKey) ? rawKey : '';
     <div class="container">
       {videoId ? (<>
       <header class="section-head">
-        <p class="eyebrow">01 / Music</p>
         <h2 class="section-title" id="music-title">New Official Clip</h2>
       </header>
       <div class="video-facade" data-video-id={videoId} data-video-title={videoTitle}>
@@ -145,7 +155,6 @@ const turnstileKey = /^[0-9A-Za-z_-]{10,60}$/.test(rawKey) ? rawKey : '';
       </>) : (
       <header class="section-head section-head--row">
         <div>
-          <p class="eyebrow">01 / Music</p>
           <h2 class="section-title" id="music-title">Latest Releases</h2>
         </div>
         <a class="link-arrow" href="#listen">All platforms
@@ -182,11 +191,10 @@ const turnstileKey = /^[0-9A-Za-z_-]{10,60}$/.test(rawKey) ? rawKey : '';
   </section>
 
   <!-- DATES -->
-  <section class="section section--dates" id="dates" aria-labelledby="dates-title">
+  <section class={`section section--dates${upcoming.length ? '' : ' section--compact'}`} id="dates" aria-labelledby="dates-title">
     <div class="container">
       <header class="section-head section-head--row">
         <div>
-          <p class="eyebrow">02 / Live</p>
           <h2 class="section-title" id="dates-title">Upcoming Shows</h2>
         </div>
         <p class="section-aside">All times SAST</p>
@@ -223,16 +231,23 @@ const turnstileKey = /^[0-9A-Za-z_-]{10,60}$/.test(rawKey) ? rawKey : '';
         <img src="/images/portrait.jpg" alt={`Portrait of ${site.name}`} width="900" height="1350" loading="lazy">
       </figure>
       <div class="about__text">
-        <p class="eyebrow">03 / About</p>
         <h2 class="section-title" id="about-title">The Story</h2>
-        <div class="about__body"><Bio /></div>
+        <div class="about__body">
+          {bioLead.map((p) => <p set:html={p} />)}
+          {bioMore.length > 0 && (
+            <details class="about__more">
+              <summary><span class="about__more-open">Read more</span><span class="about__more-close">Read less</span></summary>
+              {bioMore.map((p) => <p set:html={p} />)}
+            </details>
+          )}
+        </div>
         <dl class="about__facts">
           <div><dt>Based</dt><dd>Johannesburg</dd></div>
           <div><dt>Sound</dt><dd>House &amp; techno</dd></div>
         </dl>
       </div>
     </div>
-    {(accolades.length > 0 || statTiles.length > 0) && (
+    {(accolades.length > 0 || statTiles.length > 0 || numbers.length > 0) && (
     <div class="container accolades" aria-labelledby="accolades-title">
       <h3 class="accolades__title" id="accolades-title">Highlights</h3>
       {statTiles.length > 0 && (
@@ -242,17 +257,19 @@ const turnstileKey = /^[0-9A-Za-z_-]{10,60}$/.test(rawKey) ? rawKey : '';
           ))}
         </ul>
       )}
-      <ul class="accolades__list">
-        {accolades.map((a) => (
-          <li class="accolade">
-            {a.badge && <span class="accolade__badge" data-badge={a.badge.toLowerCase()}>{a.badge}</span>}
-            <div>
-              <p class="accolade__title">{a.title}{a.year && <span class="accolade__year"> · {a.year}</span>}</p>
-              {a.detail && <p class="accolade__detail">{a.detail}</p>}
-            </div>
-          </li>
+      {numbers.length > 0 && (
+        <ul class="numbers" aria-label="By the numbers">
+          {numbers.map((n) => <li class="number"><span class="number__value">{n.value}</span><span class="number__label">{n.label}</span></li>)}
+        </ul>
+      )}
+      <dl class="facts-list">
+        {accolades.filter((a) => !/^(streams|shazam)$/i.test(a.badge)).map((a) => (
+          <div class="facts-list__row">
+            <dt>{a.title}{a.year && <span class="accolade__year"> · {a.year}</span>}</dt>
+            {a.detail && <dd>{a.detail}</dd>}
+          </div>
         ))}
-      </ul>
+      </dl>
     </div>
   )}
   </section>
@@ -261,12 +278,11 @@ const turnstileKey = /^[0-9A-Za-z_-]{10,60}$/.test(rawKey) ? rawKey : '';
   <section class="section section--visuals" id="visuals" aria-labelledby="visuals-title">
     <div class="container">
       <header class="section-head">
-        <p class="eyebrow">04 / Social</p>
         <h2 class="section-title" id="visuals-title">Gallery</h2>
       </header>
       <ul class="gallery">
         {gallery.map((g, i) => (
-          <li class={`gallery__item${i === 0 ? ' gallery__item--wide' : ''}`}>
+          <li class="gallery__item">
             {g.url
               ? <a href={g.url} rel="noopener noreferrer" target="_blank" aria-label={`${g.alt} (opens Instagram)`}><img src={g.src} alt={g.alt} width="1080" height="1080" loading="lazy"></a>
               : <img src={g.src} alt={g.alt} width="1600" height="900" loading="lazy">}
@@ -291,7 +307,6 @@ const turnstileKey = /^[0-9A-Za-z_-]{10,60}$/.test(rawKey) ? rawKey : '';
   <section class="section section--contact" id="contact" aria-labelledby="contact-title">
     <div class="container contact">
       <div class="contact__intro">
-        <p class="eyebrow">05 / Contact</p>
         <h2 class="section-title" id="contact-title">Bookings</h2>
         <p>For club nights, festivals and private events, send the details below and his team will come back to you.</p>
         {bookingEmail && (
