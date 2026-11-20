@@ -1,0 +1,29 @@
+---
+import LegalPage from '../components/LegalPage.astro';
+import legal from '../content/legal.json';
+import site from '../content/site.json';
+// Until the owner confirms the company details, the page says so plainly (scripts/check-launch.mjs blocks launch while any are missing).
+const party = legal.responsibleParty || `${site.name} (company details to be confirmed)`;
+const regNo = legal.registrationNumber ? `, registration number ${legal.registrationNumber}` : '';
+const mgmt = legal.managementName || `${site.name}'s management`;
+const toc = [
+  { id: 'what-can-still-happen', label: 'What can still happen' },
+  { id: 'your-choices', label: 'Your choices' }
+];
+---
+<LegalPage title={`Cookie Policy | ${site.name}`} heading="Cookie Policy" toc={toc} description={`The ${site.name} website uses no tracking or advertising cookies. See exactly what the site stores on your device.`} path="/cookies">
+<p>Cookies are small files a website can save on your device. <strong>This site does not set any cookies of its own</strong>, and it does not use advertising, tracking or analytics cookies. Because of that, there is no cookie banner and nothing for you to accept.</p>
+
+    <h2 id="what-can-still-happen">What can still happen</h2>
+    <p>A few features load a service run by another company. We use them only when they are needed:</p>
+    <ul>
+      <li><strong>Contact form check (Cloudflare Turnstile).</strong> When you scroll to the contact form, a Cloudflare check runs to confirm you are not a bot. It is needed to keep the form safe from spam. We do not ask it to leave a long-lasting cookie, but Cloudflare may store small, short-lived items (cookies or similar browser storage) and look at signals from your browser to tell people from bots. These are strictly necessary for that purpose, and we do not use them for advertising.</li>
+      <li><strong>YouTube video.</strong> Nothing is loaded from YouTube until you press play. The video then loads from YouTube's privacy-enhanced domain (youtube-nocookie.com), which does not set cookies until you interact with the player. Once you play it, YouTube (Google) receives information such as your IP address and may store cookies or similar data on your device, under Google's own policies.</li>
+      <li><strong>Links to other services.</strong> Spotify, Apple Music, YouTube Music, Instagram and similar links take you to their sites, which set their own cookies under their own policies.</li>
+    </ul>
+    <p>Fonts, images, photos and videos on this site are served from our own domain. We do not load them from other companies, so they do not contact outside services.</p>
+
+    <h2 id="your-choices">Your choices</h2>
+    <p>You can block or delete cookies in your browser settings at any time. The site works without cookies. If you block Cloudflare's check, the contact form will not send, and you can contact us by another route instead.</p>
+    <p>For how we handle personal information, see our <a href="/privacy">Privacy Policy</a>.</p>
+</LegalPage>
