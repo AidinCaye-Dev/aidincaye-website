@@ -27,6 +27,7 @@ const footerLinks = [
   ...chips.map((c) => ({ label: c.label, href: c.href })),
   { label: 'SoundCloud', href: ok((links as any).soundcloud, /^https:\/\/(www\.)?soundcloud\.com\//) },
   { label: 'Facebook', href: ok((links as any).facebook, /^https:\/\/(www\.)?facebook\.com\//) },
+  { label: 'TikTok', href: ok((links as any).tiktok, /^https:\/\/(www\.)?tiktok\.com\/@/) },
 ].filter((l) => l.href);
 // One list drives both the menu and the footer index, in the same order as the sections on the page.
 const sections = [

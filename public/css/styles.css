@@ -234,6 +234,17 @@ button { font: inherit; color: inherit; }
 .release__platform:hover, .release__platform:focus-visible { background: var(--ink); border-color: var(--ink); color: var(--paper); }
 .release__platform-icon { width: 1.2rem; height: 1.2rem; fill: currentColor; flex: none; }
 
+/* ---------- Music: selected discography ---------- */
+.discography { margin-top: clamp(3rem, 6vw, 4.5rem); }
+.discography__title { font-weight: 400; text-transform: uppercase; letter-spacing: .14em; font-size: clamp(1.3rem, 2.4vw, 1.8rem); margin-bottom: 1.25rem; }
+.discography__list { border-top: 1px solid var(--line-strong); }
+.disc { display: grid; grid-template-columns: 4.5rem 1fr auto; gap: 1rem; align-items: baseline; padding: 1rem 0; border-bottom: 1px solid var(--line); }
+.disc__year { font-size: .8rem; letter-spacing: var(--track); color: var(--ink-3); }
+.disc__title { font-weight: 500; text-transform: uppercase; letter-spacing: .08em; }
+.disc__credit { display: block; font-size: .85rem; color: var(--ink-3); margin-top: .15rem; }
+.disc__streams { font-size: .8rem; letter-spacing: var(--track); text-transform: uppercase; color: var(--ink-2); white-space: nowrap; }
+@media (max-width: 600px) { .disc { grid-template-columns: 3.25rem 1fr; } .disc__streams { grid-column: 2; } }
+
 /* ---------- Dates ---------- */
 .section--dates { background: var(--paper-2); }
 .show-list { border-top: 1px solid var(--line-strong); }
