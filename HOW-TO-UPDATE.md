@@ -6,7 +6,7 @@ Edit files in `src/content/` through a pull request. When it is merged to `main`
 |---|---|
 | `site.json` | Name, role, location, page title and description, public booking email (optional), public Turnstile site key |
 | `bio.md` | The Story text (first paragraph is shown larger). Facts only, confirmed by Aidin |
-| `shows.json` | Upcoming Shows. One object per show (example below). Past dates hide themselves |
+| `shows.json` | Upcoming Shows. **Filled automatically from Aidin's gig calendar** once `GIG_CALENDAR_ICS` is set (see below); otherwise edited by hand (example below). Past dates hide themselves |
 | `links.json` | Instagram, YouTube, Spotify, Apple Music, SoundCloud, Facebook. Empty links are hidden. The Spotify, Apple Music and YouTube links also drive the automatic releases and latest video |
 | `releases.json` | Fallback releases, used only when the automatic lookup returns nothing |
 | `gallery.json` | Gallery. Replaced automatically by his 6 newest Instagram posts once the token is set; until then his own photos show |
@@ -22,7 +22,16 @@ Edit files in `src/content/` through a pull request. When it is merged to `main`
 ```
 `status` is `tickets`, `free` or `soldout`. Bad entries are never published and make `npm test` fail.
 
-## What updates by itself (every build, plus a weekly rebuild on Monday at about 05:41 SAST)
+## Gigs: straight from Aidin's calendar
+Every build reads his gig calendar and rewrites `shows.json` with the upcoming gigs (and an empty list when there are none). There is no approval step: **whatever is in that calendar goes on the site**, so use a calendar that holds only public gigs.
+- **Title** = event name, e.g. `The Garden Party`.
+- **Location** = `Venue, City` (a full Google Maps address also works: the first part is the venue, the town is picked out after it).
+- **Description** (optional), one per line: `Tickets: https://...`, or `Free entry`, or `Sold out`. Nothing else from the description is ever used, so fees and contacts there stay private.
+- **Skipped automatically:** events marked Private, Cancelled or Tentative, and titles containing HOLD, TBC, TBA, PRIVATE or TENTATIVE.
+- **Setup:** Google Calendar → the gig calendar's Settings → Integrate calendar → **Secret address in iCal format**. Save it in Cloudflare Pages as the encrypted secret `GIG_CALENDAR_ICS`. It is a secret: never put it in the repo, a chat or an email. If it ever leaks, reset it in Google Calendar and save the new one.
+- New gigs appear after the next build: the daily rebuild at about 05:41 SAST, or any merge.
+
+## What updates by itself (every build, plus a daily rebuild at about 05:41 SAST)
 - **Latest video:** newest upload on the YouTube channel in `links.json`.
 - **Latest releases:** Spotify (if `SPOTIFY_CLIENT_ID`/`SPOTIFY_CLIENT_SECRET` are set) or Apple Music (no key, needs the Apple Music artist link).
 - **Gallery:** 6 newest Instagram posts, needs `INSTAGRAM_ACCESS_TOKEN` (Meta system-user token, read-only `instagram_basic` + `pages_show_list`) and `INSTAGRAM_USER_ID`. There is no fallback account ID, by design.
