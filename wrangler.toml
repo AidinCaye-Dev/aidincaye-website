@@ -7,5 +7,5 @@ pages_build_output_dir = "dist"
 # Secrets (encrypted):
 #   TURNSTILE_SECRET, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, BOOKING_TO_EMAIL, BOOKING_FROM_EMAIL
 # Build variables/secrets (used at build time only):
-#   INSTAGRAM_ACCESS_TOKEN (secret), INSTAGRAM_USER_ID, YOUTUBE_API_KEY (secret, read-only),
+#   GIG_CALENDAR_ICS (secret: the gig calendar's secret iCal address), INSTAGRAM_ACCESS_TOKEN (secret), INSTAGRAM_USER_ID, YOUTUBE_API_KEY (secret, read-only),
 #   SPOTIFY_CLIENT_ID / SPOTIFY_CLIENT_SECRET (optional), YOUTUBE_CHANNEL_ID (optional), PUBLIC_TURNSTILE_SITEKEY (optional)

@@ -1,11 +1,12 @@
-# Rebuilds the site once a week (saves Cloudflare builds, which are shared across sites on the account) so the latest YouTube video and Spotify/Apple releases stay current.
+# Rebuilds the site every day so new gigs from Aidin's calendar, the latest YouTube video and releases appear on their own.
+# About 30 builds a month, in Aidin's own Cloudflare account (free plan: 500).
 # One-time setup:
 #   1. Cloudflare dashboard -> Workers & Pages -> aidincaye-website -> Settings -> Builds & deployments -> Deploy hooks -> create one.
 #   2. GitHub repo -> Settings -> Secrets and variables -> Actions -> New secret: CF_DEPLOY_HOOK = the hook URL.
 name: Refresh site data
 on:
   schedule:
-    - cron: "41 3 * * 1"   # 03:41 UTC every Monday (05:41 SAST)
+    - cron: "41 3 * * *"   # 03:41 UTC daily (05:41 SAST)
   workflow_dispatch:
 permissions: {}
 jobs:
