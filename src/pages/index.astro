@@ -89,9 +89,9 @@ const turnstileKey = /^[0-9A-Za-z_-]{10,60}$/.test(rawKey) ? rawKey : '';
   <section class="hero" id="top" aria-labelledby="hero-title">
     <div class="hero__media">
       <picture>
-        <source media="(max-width: 700px)" type="image/avif" srcset="/img/hero-m-900.avif">
-        <source media="(max-width: 700px)" type="image/webp" srcset="/img/hero-m-900.webp">
-        <source media="(max-width: 700px)" srcset="/img/hero-m-900.jpg">
+        <source media="(max-width: 1100px) and (orientation: portrait), (max-width: 700px)" type="image/avif" srcset="/img/hero-m-900.avif 900w, /img/hero-m-1036.avif 1036w" sizes="100vw">
+        <source media="(max-width: 1100px) and (orientation: portrait), (max-width: 700px)" type="image/webp" srcset="/img/hero-m-900.webp 900w, /img/hero-m-1036.webp 1036w" sizes="100vw">
+        <source media="(max-width: 1100px) and (orientation: portrait), (max-width: 700px)" srcset="/img/hero-m-900.jpg 900w, /img/hero-m-1036.jpg 1036w" sizes="100vw">
         <source type="image/avif" srcset="/img/hero-900.avif 900w, /img/hero-1600.avif 1600w, /img/hero-2576.avif 2576w" sizes="100vw">
         <source type="image/webp" srcset="/img/hero-900.webp 900w, /img/hero-1600.webp 1600w, /img/hero-2576.webp 2576w" sizes="100vw">
         <img class="hero__photo" src="/img/hero-1600.jpg" srcset="/img/hero-900.jpg 900w, /img/hero-1600.jpg 1600w, /img/hero-2576.jpg 2576w" sizes="100vw" width="2576" height="1382" alt="" fetchpriority="high">

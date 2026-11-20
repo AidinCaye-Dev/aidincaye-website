@@ -36,8 +36,8 @@
 
 /* ---------- Base ---------- */
 *, *::before, *::after { box-sizing: border-box; }
-/* Desktop sits at an effective 90% scale: sizes (rem) shrink 10%, the content column widens to match. */
-@media (min-width: 1100px) { html { font-size: 90%; } :root { --container: 1378px; } }
+/* Only big monitors (1600px+) get the 90% scale and wider column. Small laptops and tablets keep full-size text. */
+@media (min-width: 1600px) { html { font-size: 90%; } :root { --container: 1378px; } }
 html { scroll-behavior: smooth; scroll-padding-top: 80px; -webkit-text-size-adjust: 100%; }
 body {
   margin: 0; background: var(--paper); color: var(--ink);
@@ -379,11 +379,8 @@ button { font: inherit; color: inherit; }
 /* =========================================================
    Responsive
    ========================================================= */
+/* Tablets and small screens (up to 1100px, i.e. every iPad): touch-friendly full-screen menu instead of the tiny desktop one. */
 @media (max-width: 1100px) {
-  .site-nav__label { display: none; }
-  .release-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 900px) {
   :root { --header-h: 68px; }
   .nav-toggle { display: block; }
   .site-nav {
@@ -396,22 +393,38 @@ button { font: inherit; color: inherit; }
   .site-nav__list { flex-direction: column; align-items: center; gap: 1.25rem; margin: 0; }
   .site-nav__list a { font-size: 1.6rem; font-weight: 400; letter-spacing: .16em; }
   .site-nav__label { display: inline; }
+  .social-chip { width: 2.75rem; height: 2.75rem; }
   body.nav-open { overflow: hidden; }
-
-  .hero__title { width: min(62vw, 22rem, 22vh * 1.98); }
+}
+/* Portrait screens up to tablet size use the upright crop of the hero photo (see index.astro), anchored at his feet. */
+@media (max-width: 1100px) and (orientation: portrait), (max-width: 700px) {
   .hero__photo { object-position: 50% 100%; }
+  .hero__title { width: min(62vw, 28rem, 22vh * 1.98); }
+}
+@media (max-width: 900px) {
 
   .show { grid-template-columns: 5.5rem 1fr auto; row-gap: .35rem; }
   .show__event { grid-column: 2; grid-row: 2; font-size: .85rem; }
   .show .btn { grid-column: 3; grid-row: 1 / span 2; }
   .about, .contact { grid-template-columns: 1fr; }
   .about__media { max-width: 460px; margin-right: 1.25rem; }
+  .release-grid { grid-template-columns: repeat(2, 1fr); }
   .legal__layout { grid-template-columns: 1fr; }
   .legal__toc { position: static; }
   .legal__toc ol { columns: 2; column-gap: 1.5rem; border-left: 0; }
   .legal__toc li a { padding-left: 0; border-left: 0; }
   .site-footer__top { grid-template-columns: 1fr 1fr; }
   .site-footer__brand { grid-column: 1 / -1; }
+}
+/* Tablet band (701-1100px): keep two columns where they read well instead of stretching the phone layout. */
+@media (min-width: 701px) and (max-width: 1100px) {
+  .about { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+  .about__media { max-width: none; margin-right: 1.25rem; }
+  .contact { grid-template-columns: 1fr; }
+  .contact__intro > p:not(.eyebrow) { max-width: 60ch; }
+  .form__row { grid-template-columns: 1fr 1fr; }
+  .site-footer__top { grid-template-columns: 1.4fr 1fr 1fr 1fr; }
+  .site-footer__brand { grid-column: auto; }
 }
 @media (max-width: 600px) {
   .hero__footer { flex-direction: column; align-items: stretch; gap: .75rem; }
