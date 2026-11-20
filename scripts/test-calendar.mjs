@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { parseEvents, eventsToShows, eventDate, splitLocation, validFeedUrl, unfold } from './calendar.mjs';
+import { parseEvents, eventsToShows, eventDate, splitLocation, validFeedUrl, unfold, descriptionText } from './calendar.mjs';
 import { cleanShows } from './shows.mjs';
 
 const ics = [
@@ -37,4 +37,12 @@ assert.deepEqual(splitLocation('H2O Festival, Cape Town, South Africa'), { venue
 assert.deepEqual(splitLocation('The Circle, Maputo, Mozambique'), { venue: 'The Circle', city: 'Maputo' });
 assert.ok(validFeedUrl('https://calendar.google.com/calendar/ical/x%40group.calendar.google.com/private-abc/basic.ics'));
 for (const bad of ['http://calendar.google.com/x.ics', 'javascript:alert(1)', 'https://u:p@x.example/a.ics', 'https://x.example/page', '']) assert.equal(validFeedUrl(bad), '', bad);
+// Google-style HTML descriptions, known ticket hosts, private links ignored, "Cnr" trimmed from venues
+const mk = (desc, loc = 'Venue\\, Benoni') => eventsToShows(parseEvents(['BEGIN:VEVENT', 'UID:t@g', 'DTSTART;VALUE=DATE:20261223', 'SUMMARY:Gig', 'LOCATION:' + loc, 'DESCRIPTION:' + desc, 'END:VEVENT'].join('\r\n')), '2026-11-20')[0];
+assert.equal(mk('Tickets: <a href="https://tix.example/a">https://tix.example/a</a>').url, 'https://tix.example/a', 'labelled link inside Google HTML');
+assert.equal(mk('Get yours here <a href="https://www.quicket.co.za/events/123-main-event/">quicket</a><br>See you there').url, 'https://www.quicket.co.za/events/123-main-event/', 'bare link on a ticketing site');
+assert.equal(mk('Join: https://meet.google.com/abc-defg-hij<br>Rider: https://docs.google.com/x').url, '', 'meeting and document links are never used');
+assert.equal(mk('https://howler.co.za/events/x').url, 'https://howler.co.za/events/x');
+assert.equal(mk('', 'Flamingo Bay Waterfront Cnr Boundary & Dove Rd\\, Rynfield\\, Benoni\\, 1501\\, South Africa').venue, 'Flamingo Bay Waterfront');
+assert.equal(descriptionText('a &amp; b<br>c'), 'a & b\nc');
 console.log('gig calendar: all tests passed');
