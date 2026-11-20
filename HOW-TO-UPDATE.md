@@ -26,7 +26,8 @@ Edit files in `src/content/` through a pull request. When it is merged to `main`
 Every build reads his gig calendar and rewrites `shows.json` with the upcoming gigs (and an empty list when there are none). There is no approval step: **whatever is in that calendar goes on the site**, so use a calendar that holds only public gigs.
 - **Title** = event name, e.g. `The Garden Party`.
 - **Location** = `Venue, City` (a full Google Maps address also works: the first part is the venue, the town is picked out after it).
-- **Description** (optional), one per line: `Tickets: https://...`, or `Free entry`, or `Sold out`. Nothing else from the description is ever used, so fees and contacts there stay private.
+- **Description** (optional), one per line: `Tickets: https://...`, or `Free entry`, or `Sold out`. An unlabelled link is also used if it is on a ticketing site (Quicket, Howler, Computicket, Webtickets, TicketPro, Ticketmaster, Eventbrite, Resident Advisor, Dice). Nothing else from the description is ever used, so meeting links, fees and contacts there stay private.
+- A venue typed as "Venue Cnr X & Y Rd" is shortened to "Venue".
 - **Skipped automatically:** events marked Private, Cancelled or Tentative, and titles containing HOLD, TBC, TBA, PRIVATE or TENTATIVE.
 - **Setup:** Google Calendar → the gig calendar's Settings → Integrate calendar → **Secret address in iCal format**. Save it in Cloudflare Pages as the encrypted secret `GIG_CALENDAR_ICS`. It is a secret: never put it in the repo, a chat or an email. If it ever leaks, reset it in Google Calendar and save the new one.
 - New gigs appear after the next build: the daily rebuild at about 05:41 SAST, or any merge.

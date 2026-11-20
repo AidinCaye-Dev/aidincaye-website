@@ -2,7 +2,7 @@
 // entries for src/content/shows.json. Used by scripts/fetch-data.mjs at build time; tested by scripts/test-calendar.mjs.
 //
 // Privacy and safety rules (the calendar is personal data, and its text is data, never instructions):
-//   - Only the date, title, location, an explicit ticket link and the event's UID are used. Descriptions, attendees,
+//   - Only the date, title, location, a ticket link (labelled "Tickets:" or on a known ticketing site) and the event's UID are used. Descriptions, attendees,
 //     organisers, notes and times are never copied anywhere.
 //   - Events marked private/confidential, cancelled or tentative, and any whose title contains HOLD, TBC, TBA,
 //     PRIVATE or TENTATIVE, are skipped.
@@ -13,6 +13,7 @@
 //   Title     = the event name, e.g. "The Garden Party"
 //   Location  = "Venue, City" (Google's full addresses also work: the first part is the venue, the town is found after it)
 //   Description (optional), one per line:  "Tickets: https://..."   or   "Free entry"   or   "Sold out"
+//   (a bare link is also used if it is on a known ticketing site: Quicket, Howler, Computicket, Webtickets, ...)
 
 const SKIP_WORDS = /\b(hold|tbc|tba|private|tentative)\b/i;
 const COUNTRIES = /^(south africa|za|rsa|mozambique|moçambique|namibia|botswana|zimbabwe|eswatini|lesotho|kenya|nigeria|ghana|united kingdom|uk|germany|netherlands|portugal|spain|france|mauritius)$/i;
@@ -61,24 +62,41 @@ export function eventDate(dt) {
 export function splitLocation(loc) {
   const parts = String(loc || '').split(/\s*,\s*/).map((p) => p.trim()).filter(Boolean);
   if (!parts.length) return { venue: '', city: '' };
-  const venue = parts[0];
+  // "Flamingo Bay Waterfront Cnr Boundary & Dove Rd" -> "Flamingo Bay Waterfront"
+  const venue = parts[0].replace(/\s+(cnr\.?|corner(\s+of)?)\s+.*$/i, '').trim() || parts[0];
   const rest = parts.slice(1).filter((p) => !/^\d{3,6}$/.test(p) && !/^\d+\s/.test(p) && !COUNTRIES.test(p));
   const country = parts.slice(1).find((p) => COUNTRIES.test(p)) || '';
   const city = rest.length ? rest[rest.length - 1] : country;
   return { venue, city };
 }
 
+// Ticketing sites whose links may be used even without a "Tickets:" label. Any other unlabelled link
+// (Google Meet, Zoom, documents, contracts) is ignored, so private links can never reach the site.
+const TICKET_HOSTS = /(^|\.)(quicket\.co\.za|howler\.co\.za|computicket\.com|webtickets\.co\.za|ticketpros?\.co\.za|ticketmaster\.[a-z.]+|eventbrite\.[a-z.]+|ra\.co|residentadvisor\.net|dice\.fm|plankton\.mobi|tixsa\.co\.za)$/i;
+const isTicketHost = (u) => { try { return TICKET_HOSTS.test(new URL(u).hostname); } catch { return false; } };
+
+// Google stores descriptions as simple HTML: turn links and line breaks into plain text before reading them.
+export function descriptionText(description) {
+  return String(description || '')
+    .replace(/<a\b[^>]*href=["']([^"']+)["'][^>]*>.*?<\/a>/gis, ' $1 ')
+    .replace(/<br\s*\/?>|<\/p>|<\/div>|<\/li>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+}
+
 function ticketInfo(description) {
-  const lines = String(description || '').split('\n').map((l) => l.trim());
-  let url = '';
+  const lines = descriptionText(description).split('\n').map((l) => l.trim());
+  let labelled = '';
+  let known = '';
   let status = 'tickets';
   for (const l of lines) {
-    const t = l.match(/^tickets?\s*:\s*(https:\/\/\S+)$/i);
-    if (t && !url) url = t[1];
+    const t = l.match(/^tickets?\s*[:\-]?\s*(https:\/\/\S+)/i);
+    if (t && !labelled) labelled = t[1].replace(/[).,;]+$/, '');
+    if (!known) for (const u of l.match(/https:\/\/[^\s<>"')]+/g) || []) if (isTicketHost(u)) { known = u.replace(/[.,;]+$/, ''); break; }
     if (/^free( entry)?\.?$/i.test(l)) status = 'free';
     if (/^sold\s*out\.?$/i.test(l)) status = 'soldout';
   }
-  return { url, status };
+  return { url: labelled || known, status };
 }
 
 // Returns show objects in the shows.json shape. `today` is YYYY-MM-DD (SAST); past events are dropped.
