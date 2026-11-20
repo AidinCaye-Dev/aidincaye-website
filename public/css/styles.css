@@ -439,17 +439,17 @@ button { font: inherit; color: inherit; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 
-/* Play button: YouTube's own red play logo (the video plays from YouTube). Overrides the round button above. */
+/* Play button: YouTube's play logo in white/transparent (the video plays from YouTube). Overrides the round button above. */
 .video-facade__play {
-  width: clamp(4.25rem, 8vw, 6rem); aspect-ratio: 68 / 48; height: auto;
+  width: clamp(4.25rem, 8vw, 6rem); aspect-ratio: 72 / 52; height: auto;
   border: 0; border-radius: 0; background: none; padding: 0;
-  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, .35));
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, .35));
 }
 .video-facade__play svg.video-facade__yt { width: 100%; height: 100%; margin: 0; fill: none; }
-.video-facade__yt-bg { fill: #ff0000; transition: fill .2s; }
+.video-facade__yt-bg { fill: rgba(255, 255, 255, .14); stroke: #fff; stroke-width: 2px; vector-effect: non-scaling-stroke; transition: fill .2s; }
 .video-facade__yt-arrow { fill: #fff; }
 .video-facade__play:hover, .video-facade__play:focus-visible { background: none; border-color: transparent; transform: translate(-50%, -50%) scale(1.06); }
-.video-facade__play:hover .video-facade__yt-bg, .video-facade__play:focus-visible .video-facade__yt-bg { fill: #cc0000; }
+.video-facade__play:hover .video-facade__yt-bg, .video-facade__play:focus-visible .video-facade__yt-bg { fill: rgba(255, 255, 255, .3); }
 .video-facade__play:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
 @media (max-width: 600px) {
   .video-facade__play { width: 3.5rem; top: 36%; }
