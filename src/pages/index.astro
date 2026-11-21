@@ -50,13 +50,13 @@ const statTiles = [
 // Only https links to the expected platform are used anywhere on the page.
 const ok = (u: unknown, re: RegExp) => (typeof u === 'string' && re.test(u) ? u : '');
 const platforms = [
-  { name: 'Spotify', href: ok(links.spotify, /^https:\/\/open\.spotify\.com\//) },
-  { name: 'Apple Music', href: ok(links.appleMusic, /^https:\/\/music\.apple\.com\//) },
-  { name: 'YouTube', href: ok(links.youtube, /^https:\/\/(www\.)?youtube\.com\//) },
-  { name: 'SoundCloud', href: ok((links as any).soundcloud, /^https:\/\/(www\.)?soundcloud\.com\//) },
-  { name: 'Instagram', href: ok(links.instagram, /^https:\/\/(www\.)?instagram\.com\//) },
-  { name: 'Facebook', href: ok((links as any).facebook, /^https:\/\/(www\.)?facebook\.com\//) },
-  { name: 'TikTok', href: ok((links as any).tiktok, /^https:\/\/(www\.)?tiktok\.com\/@/) },
+  { name: 'Spotify', icon: 'spotify', href: ok(links.spotify, /^https:\/\/open\.spotify\.com\//) },
+  { name: 'Apple Music', icon: 'applemusic', href: ok(links.appleMusic, /^https:\/\/music\.apple\.com\//) },
+  { name: 'YouTube', icon: 'youtube', href: ok(links.youtube, /^https:\/\/(www\.)?youtube\.com\//) },
+  { name: 'SoundCloud', icon: 'soundcloud', href: ok((links as any).soundcloud, /^https:\/\/(www\.)?soundcloud\.com\//) },
+  { name: 'Instagram', icon: 'instagram', href: ok(links.instagram, /^https:\/\/(www\.)?instagram\.com\//) },
+  { name: 'Facebook', icon: 'facebook', href: ok((links as any).facebook, /^https:\/\/(www\.)?facebook\.com\//) },
+  { name: 'TikTok', icon: 'tiktok', href: ok((links as any).tiktok, /^https:\/\/(www\.)?tiktok\.com\/@/) },
 ].filter((p) => p.href);
 const youtubeHref = platforms.find((p) => p.name === 'YouTube')?.href || '';
 const streamLinks = platforms.filter((p) => p.name === 'Spotify' || p.name === 'Apple Music');
@@ -306,7 +306,7 @@ const turnstileKey = /^[0-9A-Za-z_-]{10,60}$/.test(rawKey) ? rawKey : '';
       <h2 class="visually-hidden" id="listen-title">Listen and follow</h2>
       <p class="listen__label">Listen and follow</p>
       <ul class="platforms">
-        {platforms.map((p) => <li><a href={p.href} rel="me noopener noreferrer" target="_blank">{p.name}</a></li>)}
+        {platforms.map((p) => <li><a href={p.href} rel="me noopener noreferrer" target="_blank"><svg class="platforms__icon" aria-hidden="true" focusable="false"><use href={`#i-${p.icon}`}/></svg>{p.name}</a></li>)}
       </ul>
     </div>
   </section>
