@@ -12,6 +12,10 @@ Edit files in `src/content/` through a pull request. When it is merged to `main`
 | `gallery.json` | Gallery. Replaced automatically by his 6 newest Instagram posts once the token is set; until then his own photos show |
 | `accolades.json`, `stats.manual.json` | Optional accolades and stream totals. Only verified facts |
 | `legal.json` | Company details used by the Privacy, Terms and Cookie pages |
+| `photos/hero.*`, `photos/portrait.*` | The hero banner and the About photo (one source file each: JPEG, PNG or WebP). Every size, the phone crop and the link preview are made at build time by `scripts/photos.mjs` |
+| `photos.json` | Photo placement: `heroPersonX` / `portraitPersonX` (where the person stands, 0-100) and `heroSpaceAbove` (0-40, plain space above the hero so the logo clears his face) |
+
+**Caretaker limits:** pull requests from anyone other than Kevin may only change `bio.md`, `accolades.json`, `numbers.json`, `releases.json`, `photos.json` and the two photos. The **Content guard** workflow enforces this (and checks the content) and should be a required check on `main`. After a photo change, run `npm run photos` locally and commit the regenerated `public/img`/`public/images` files and `photos/.stamp` when convenient, so builds can skip the step again.
 
 ## shows.json example
 ```json
