@@ -14,3 +14,4 @@ npm run check:launch   # lists anything still missing before the domain goes liv
 See HOW-TO-UPDATE.md. Caretaker (AI) rules: GROK-TASKS.md.
 
 Public repository: never commit secrets, tokens, passwords or private email addresses. Secrets live only in Cloudflare and GitHub Actions secrets.
+
